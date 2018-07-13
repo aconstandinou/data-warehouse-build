@@ -9,7 +9,7 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import os
 
-       
+   
 #def table_exists(credentials):
 #    """
 #    check to see if table exists PostgreSQL database
@@ -39,6 +39,7 @@ def create_db(db_credential_info):
     if check_db_exists(db_credential_info):
         pass
     else:
+        print('Creating new database.')
         conn = psycopg2.connect(host=db_host, database='postgres', user=db_user, password=db_password)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
@@ -93,7 +94,7 @@ def create_mkt_tables(db_credential_info):
                     """
                     CREATE TABLE data_vendor (
                         id SERIAL PRIMARY KEY,
-                        name TEXT NOT NULL,
+                        name TEXT UNIQUE NOT NULL,
                         website_url VARCHAR(255) NULL,
                         created_date TIMESTAMP NOT NULL,
                         last_updated_date TIMESTAMP NOT NULL
@@ -120,7 +121,7 @@ def create_mkt_tables(db_credential_info):
                         stock_id INTEGER NOT NULL,
                         created_date TIMESTAMP NOT NULL,
                         last_updated_date TIMESTAMP NOT NULL,
-                        date DATE,
+                        date_price DATE,
                         open_price NUMERIC,
                         high_price NUMERIC,
                         low_price NUMERIC,
@@ -133,6 +134,7 @@ def create_mkt_tables(db_credential_info):
                     """)
         try:
             for command in commands:
+                print('Building tables.')
                 conn = psycopg2.connect(host=db_host,database=db_name, user=db_user, password=db_password)
                 cur = conn.cursor()
                 cur.execute(command)
@@ -147,6 +149,7 @@ def create_mkt_tables(db_credential_info):
                 conn.close()
     else:
         pass
+
     
 def load_db_credential_info(f_name_path):
     """
@@ -179,7 +182,6 @@ def main():
     # second lets create our tables for our new database
     create_mkt_tables([db_host, db_user, db_password, db_name])
 
-    
     
 if __name__ == "__main__":
     main()

@@ -12,6 +12,7 @@ import psycopg2
 import requests
 import os
 
+
 def parse_wiki_snp500():
     """
     Download and parse Wikipedia for the current list of S&P500 companies.
@@ -39,9 +40,17 @@ def parse_wiki_snp500():
                       )
     return symbols
 
+
 def insert_snp500_symbols_postgres(symbols, db_host, db_user, db_password, db_name):
     """
     Load S&P500 symbols into our PostgreSQL database.
+    args:
+        symbols: list of tuples which holds our stock info data.
+        db_host: name of host to connect to db, type string.
+        db_user: name of user_name to connect to db, type string.
+        db_name: name of our database, type string.
+    returns:
+        None
     """
     # Connect to our PostgreSQL database
     conn = psycopg2.connect(host=db_host, database=db_name, user=db_user, password=db_password)
@@ -54,14 +63,23 @@ def insert_snp500_symbols_postgres(symbols, db_host, db_user, db_password, db_na
     with conn:
         cur = conn.cursor()
         cur.executemany(final_str, symbols)
+
         
 def load_db_info(f_name_path):
+    """
+    load text file holding our database credential info and the database name
+    args:
+        f_name_path: name of file preceded with "\\", type string
+    returns:
+        array of 4 values that should match text file info
+    """
     cur_path = os.getcwd()
     # lets load our database credentials and info
     f = open(cur_path + f_name_path, 'r')
     lines = f.readlines()[1:]
     lines = lines[0].split(',')
     return lines
+
 
 def main():
     db_info_file = "database_info.txt"
@@ -72,7 +90,7 @@ def main():
     symbols = parse_wiki_snp500()
     insert_snp500_symbols_postgres(symbols, db_host, db_user, db_password, db_name)
     print("%s symbols were successfully added." % len(symbols))  
+
     
 if __name__ == "__main__":
-    main()
-      
+    main()   
