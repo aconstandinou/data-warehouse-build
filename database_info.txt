@@ -1,2 +1,2 @@
 # input database/user credential data. Must be in order and separated by commas: database_host, database_user, database_password, database_name
-localhost,antonio_zeus,postgres,securities_master
+HOST,POSTGRES_USER_NAME,POSTGRES_PASSWORD,securities_master
