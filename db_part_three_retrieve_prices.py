@@ -130,6 +130,9 @@ def load_yhoo_data(symbol, symbol_id, vendor_id, conn):
     newDF['last_updated_date'] = datetime.datetime.utcnow()
     newDF = newDF[columns_table_order]
     
+    # ensure our data is sorted by date
+    newDF = newDF.sort_values(by=['date_price'], ascending = True)
+    
     # convert our dataframe to a list
     list_of_lists = newDF.values.tolist()
     # convert our list to a list of tuples       
